@@ -60,47 +60,28 @@ local function HackingSuccess(success)
 	end
 end
 
-CreateThread(function()
-	while true do
-		local sleep = 5000
-		if LocalPlayer.state.isLoggedIn then
-			local ped = PlayerPedId()
-			local pos = GetEntityCoords(ped)
-			local dist = #(pos - Crypto.Exchange.coords)
-			if dist < 15 then
-				sleep = 5
-				if dist < 1.5 then
-					if not Crypto.Exchange.RebootInfo.state then
-						DrawText3Ds(Crypto.Exchange.coords, Lang:t('text.enter_usb'))
-						if not requiredItemsShowed then
-							requiredItemsShowed = true
-							TriggerEvent('inventory:client:requiredItems', requiredItems, true)
-						end
+local point = lib.points.new({
+	coords = Crypto.Exchange.coords,
+	distance = 1.5	
+})
 
-						if IsControlJustPressed(0, 38) then
-							QBCore.Functions.TriggerCallback('qb-crypto:server:HasSticky', function(HasItem)
-								if HasItem then
-									TriggerEvent("mhacking:show")
-									TriggerEvent("mhacking:start", math.random(4, 6), 45, HackingSuccess)
-								else
-									QBCore.Functions.Notify(Lang:t('error.you_dont_have_a_cryptostick'), 'error')
-								end
-							end)
-						end
-					else
-						DrawText3Ds(Crypto.Exchange.coords, Lang:t('text.system_is_rebooting', {rebootInfoPercentage = Crypto.Exchange.RebootInfo.percentage}) )
-					end
-				else
-					if requiredItemsShowed then
-						requiredItemsShowed = false
-						TriggerEvent('inventory:client:requiredItems', requiredItems, false)
-					end
-				end
+function point:nearby()
+	if not Crypto.Exchange.RebootInfo.state then
+		DrawText3Ds(Crypto.Exchange.coords, Lang:t('text.enter_usb'))
+
+		if IsControlJustPressed(0, 38) then
+			local HasItem = exports.ox_inventory:Search('count', 'cryptostick') >= 1 
+			if HasItem then
+				TriggerEvent("mhacking:show")
+				TriggerEvent("mhacking:start", math.random(4, 6), 45, HackingSuccess)
+			else
+				QBCore.Functions.Notify(Lang:t('error.you_dont_have_a_cryptostick'), 'error')
 			end
 		end
-		Wait(sleep)
+	else
+		DrawText3Ds(Crypto.Exchange.coords, Lang:t('text.system_is_rebooting', {rebootInfoPercentage = Crypto.Exchange.RebootInfo.percentage}) )
 	end
-end)
+end
 
 -- Events
 

@@ -5,6 +5,7 @@ description 'QB-Crypto'
 version '1.0.0'
 
 shared_scripts {
+    '@ox_lib/init.lua',
     '@qb-core/shared/locale.lua',
     'locales/en.lua',
     'locales/*.lua',
