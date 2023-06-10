@@ -1,20 +1,18 @@
 -- Variables
 local QBCore = exports['qbx-core']:GetCoreObject()
-local requiredItemsShowed = false
-local requiredItems = {[1] = {name = QBCore.Shared.Items["cryptostick"]["name"], image = QBCore.Shared.Items["cryptostick"]["image"]}}
 
 -- Functions
 
 local function DrawText3Ds(coords, text)
 	SetTextScale(0.35, 0.35)
     SetTextFont(4)
-    SetTextProportional(1)
+    SetTextProportional(true)
     SetTextColour(255, 255, 255, 215)
-    SetTextEntry("STRING")
+    BeginTextCommandDisplayText("STRING")
     SetTextCentre(true)
-    AddTextComponentString(text)
+    AddTextComponentSubstringPlayerName(text)
     SetDrawOrigin(coords.x, coords.y, coords.z, 0)
-    DrawText(0.0, 0.0)
+    EndTextCommandDisplayText(0.0, 0.0)
     local factor = (string.len(text)) / 370
     DrawRect(0.0, 0.0+0.0125, 0.017+ factor, 0.03, 0, 0, 0, 75)
     ClearDrawOrigin()
@@ -62,7 +60,7 @@ end
 
 local point = lib.points.new({
 	coords = Crypto.Exchange.coords,
-	distance = 1.5	
+	distance = 1.5
 })
 
 function point:nearby()
@@ -70,7 +68,7 @@ function point:nearby()
 		DrawText3Ds(Crypto.Exchange.coords, Lang:t('text.enter_usb'))
 
 		if IsControlJustPressed(0, 38) then
-			local HasItem = exports.ox_inventory:Search('count', 'cryptostick') >= 1 
+			local HasItem = exports.ox_inventory:Search('count', 'cryptostick') >= 1
 			if HasItem then
 				TriggerEvent("mhacking:show")
 				TriggerEvent("mhacking:start", math.random(4, 6), 45, HackingSuccess)
@@ -97,7 +95,7 @@ end)
 
 RegisterNetEvent('qb-crypto:client:UpdateCryptoWorth', function(crypto, amount, history)
 	Crypto.Worth[crypto] = amount
-	if history ~= nil then
+	if history then
 		Crypto.History[crypto] = history
 	end
 end)
