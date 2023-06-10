@@ -11,12 +11,16 @@ shared_scripts {
     'locales/*.lua',
     'config.lua'
 }
+
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'server/main.lua'
 }
+
 client_script 'client/main.lua'
 
 dependency 'mhacking'
 
+provide 'qb-crypto'
 lua54 'yes'
+use_experimental_fxv2_oal 'yes'
