@@ -121,7 +121,7 @@ end
 -- Commands
 lib.addCommand('setcryptoworth', {
     help = 'Set crypto worth',
-    restricted = 'qbox.admin',
+    restricted = 'admin',
     params = {{
         name = 'crypto',
         help = 'Name of the crypto currency',
