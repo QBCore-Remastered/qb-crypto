@@ -1,6 +1,5 @@
 -- Variables
 local coin = Crypto.Coin
-local QBCore = exports['qbx-core']:GetCoreObject()
 local bannedCharacters = {'%', '$', ';'}
 
 -- Functions
@@ -135,19 +134,19 @@ lib.addCommand('setcryptoworth', {
     local src = source
     local crypto = args.crypto
     if not crypto then
-        TriggerClientEvent('QBCore:Notify', src, Lang:t('text.you_have_not_provided_crypto_available_qbit'))
+        exports.qbx_core:Notify(src, Lang:t('text.you_have_not_provided_crypto_available_qbit'))
         return
     end
 
     if not Crypto.Worth[crypto] then
-        TriggerClientEvent('QBCore:Notify', src, Lang:t('text.this_crypto_does_not_exist'))
+        exports.qbx_core:Notify(src, Lang:t('text.this_crypto_does_not_exist'))
         return
     end
 
     local NewWorth = math.ceil(tonumber(args.value) --[[@as number]])
 
     if not NewWorth then
-        TriggerClientEvent('QBCore:Notify', src, Lang:t('text.you_have_not_given_a_new_value', {
+        exports.qbx_core:Notify(src, Lang:t('text.you_have_not_given_a_new_value', {
             crypto = Crypto.Worth[crypto]
         }))
         return
@@ -171,7 +170,7 @@ lib.addCommand('setcryptoworth', {
         NewWorth = NewWorth
     }
 
-    TriggerClientEvent('QBCore:Notify', src, "You have changed the value of " .. Crypto.Labels[crypto] .. " from: $" .. Crypto.Worth[crypto] .. " to: $" .. NewWorth .. " (" .. ChangeLabel .. " " .. PercentageChange .. "%)")
+    exports.qbx_core:Notify(src, "You have changed the value of " .. Crypto.Labels[crypto] .. " from: $" .. Crypto.Worth[crypto] .. " to: $" .. NewWorth .. " (" .. ChangeLabel .. " " .. PercentageChange .. "%)")
     Crypto.Worth[crypto] = NewWorth
     TriggerClientEvent('qb-crypto:client:UpdateCryptoWorth', -1, crypto, NewWorth)
     MySQL.insert('INSERT INTO crypto (worth, history) VALUES (:worth, :history) ON DUPLICATE KEY UPDATE worth = :worth, history = :history', {
@@ -181,16 +180,16 @@ lib.addCommand('setcryptoworth', {
 end)
 
 lib.addCommand('checkcryptoworth', nil, function(source)
-    TriggerClientEvent('QBCore:Notify', source, Lang:t('text.the_qbit_has_a_value_of', {
+    exports.qbx_core:Notify(source, Lang:t('text.the_qbit_has_a_value_of', {
         crypto = Crypto.Worth[coin]
     }))
 end)
 
 lib.addCommand('crypto', nil, function(source)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports.qbx_core:GetPlayer(source)
     local MyPocket = math.ceil(Player.PlayerData.money.crypto * Crypto.Worth[coin])
 
-    TriggerClientEvent('QBCore:Notify', source, Lang:t('text.you_have_with_a_value_of', {
+    exports.qbx_core:Notify(source, Lang:t('text.you_have_with_a_value_of', {
         playerPlayerDataMoneyCrypto = Player.PlayerData.money.crypto,
         mypocket = MyPocket
     }))
@@ -218,7 +217,7 @@ RegisterServerEvent('qb-crypto:server:ExchangeFail', function()
     local amount = exports.ox_inventory:Search(src, 'count', 'cryptostick')
     if amount > 0 then
         exports.ox_inventory:RemoveItem(src, 'cryptostick', 1)
-        TriggerClientEvent('QBCore:Notify', src, Lang:t('error.cryptostick_malfunctioned'), 'error')
+        exports.qbx_core:Notify(src, Lang:t('error.cryptostick_malfunctioned'), 'error')
     end
 end)
 
@@ -237,7 +236,7 @@ end)
 
 RegisterServerEvent('qb-crypto:server:ExchangeSuccess', function(LuckChance)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+    local Player = exports.qbx_core:GetPlayer(src)
     local amount = exports.ox_inventory:Search(src, 'count', 'cryptostick')
 
     if amount < 0 then
@@ -250,7 +249,7 @@ RegisterServerEvent('qb-crypto:server:ExchangeSuccess', function(LuckChance)
 
     exports.ox_inventory:RemoveItem(src, 'cryptostick', 1)
     Player.Functions.AddMoney('crypto', Amount)
-    TriggerClientEvent('QBCore:Notify', src, Lang:t('success.you_have_exchanged_your_cryptostick_for', { amount = Amount }), "success", 3500)
+    exports.qbx_core:Notify(src, Lang:t('success.you_have_exchanged_your_cryptostick_for', { amount = Amount }), "success", 3500)
     TriggerClientEvent('qb-phone:client:AddTransaction', src, Player, {}, Lang:t('credit.there_are_amount_credited', { amount = Amount }), "Credit")
 end)
 
@@ -263,7 +262,7 @@ end)
 
 lib.callback.register('qb-crypto:server:GetCryptoData', function(source, name)
     name = name or 'qbit'
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports.qbx_core:GetPlayer(source)
     return {
         History = Crypto.History[name],
         Worth = Crypto.Worth[name],
@@ -273,7 +272,7 @@ lib.callback.register('qb-crypto:server:GetCryptoData', function(source, name)
 end)
 
 lib.callback.register('qb-crypto:server:BuyCrypto', function(source, data)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports.qbx_core:GetPlayer(source)
     local total_price = math.floor(tonumber(data.Coins) * tonumber(Crypto.Worth[coin]))
     if Player and Player.PlayerData.money.bank >= total_price then
         Player.Functions.RemoveMoney('bank', total_price)
@@ -291,7 +290,7 @@ lib.callback.register('qb-crypto:server:BuyCrypto', function(source, data)
 end)
 
 lib.callback.register('qb-crypto:server:SellCrypto', function(source, data)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports.qbx_core:GetPlayer(source)
     if Player and Player.PlayerData.money.crypto >= tonumber(data.Coins) then
         Player.Functions.RemoveMoney('crypto', tonumber(data.Coins))
         local amount = math.floor(tonumber(data.Coins) * tonumber(Crypto.Worth[coin]))
@@ -301,7 +300,7 @@ lib.callback.register('qb-crypto:server:SellCrypto', function(source, data)
             History = Crypto.History[coin],
             Worth = Crypto.Worth[coin],
             Portfolio = Player.PlayerData.money.crypto - tonumber(data.Coins),
-            WalletId = Player.PlayerData.metadata["walletid"]
+            WalletId = Player.PlayerData.metadata.walletid
         }
     end
 
@@ -317,7 +316,7 @@ lib.callback.register('qb-crypto:server:TransferCrypto', function(source, data)
     end
     data.WalletId = newWalletId
     data.Coins = tonumber(newCoin)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports.qbx_core:GetPlayer(source)
     if Player and Player.PlayerData.money.crypto >= tonumber(data.Coins) then
         local query = '%"walletid":"' .. data.WalletId .. '"%'
         local result = MySQL.query.await('SELECT * FROM `players` WHERE `metadata` LIKE ?', {query})
@@ -325,7 +324,7 @@ lib.callback.register('qb-crypto:server:TransferCrypto', function(source, data)
 
         Player.Functions.RemoveMoney('crypto', tonumber(data.Coins))
         TriggerClientEvent('qb-phone:client:AddTransaction', source, Player, data, "You have " .. tonumber(data.Coins) .. " Qbit('s) transferred!", "Depreciation")
-        local Target = QBCore.Functions.GetPlayerByCitizenId(result[1].citizenid)
+        local Target = exports.qbx_core:GetPlayerByCitizenId(result[1].citizenid)
 
         if Target then
             Target.Functions.AddMoney('crypto', tonumber(data.Coins))
