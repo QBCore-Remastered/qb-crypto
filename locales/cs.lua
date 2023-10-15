@@ -1,28 +1,28 @@
 local Translations = {
     error = {
-        you_dont_have_a_cryptostick = 'Du hast keinen Cryptostick',
-        one_bus_active = 'Du kannst nur einen aktiven Bus zur gleichen Zeit haben',
-        drop_off_passengers = 'Lass die Fahrgäste aussteigen, bevor du aufhörst zu arbeiten',
-        cryptostick_malfunctioned = 'Cryptostick funktioniert nicht richtig'
+        you_dont_have_a_cryptostick = 'Nemáte kryptostick',
+        one_bus_active = 'Můžete mít pouze jeden aktivní autobus najednou',
+        drop_off_passengers = 'Vysaďte cestující před tím, než přestanete pracovat',
+        cryptostick_malfunctioned = 'Kryptostick selhal'
     },
     success = {
-        you_have_exchanged_your_cryptostick_for = 'Du hast deinen Cryptostick gegen %{amount} QBit(s) eingetauscht'
+        you_have_exchanged_your_cryptostick_for = 'Vyměnili jste svůj kryptostick za: %{amount} QBit(s)'
     },
     credit = {
-        there_are_amount_credited = 'Es sind %{amount} Qbit(s) gutgeschrieben!',
-        you_have_qbit_purchased = 'Du hast %{dataCoins} Qbit(s) gekauft!'
+        there_are_amount_credited = 'Je zapsáno %{amount} Qbit(s)!',
+        you_have_qbit_purchased = 'Zakoupili jste %{dataCoins} Qbit(s)!'
     },
     depreciation = {
-        you_have_sold = 'Du hast %{dataCoins} Qbit(s) verkauft!'
+        you_have_sold = 'Prodali jste %{dataCoins} Qbit(s)!'
     },
     text = {
-        enter_usb = '[E] - USB betreten',
-        system_is_rebooting = 'System wird neu gestartet - %{rebootInfoPercentage} %',
-        you_have_not_given_a_new_value = 'Du hast keinen neuen Wert angegeben.. Aktuelle Werte: %{crypto}',
-        this_crypto_does_not_exist = 'Diese Kryptowährung existiert nicht :(, verfügbar: Qbit',
-        you_have_not_provided_crypto_available_qbit = 'Du hast keine Kryptowährung angegeben, verfügbar: Qbit',
-        the_qbit_has_a_value_of = 'Das Qbit hat einen Wert von: %{crypto}',
-        you_have_with_a_value_of = 'Du hast: %{playerPlayerDataMoneyCrypto} QBit, mit einem Wert von: %{mypocket},-'
+        enter_usb = '[E] - Vložit USB',
+        system_is_rebooting = 'Systém se restartuje - %{rebootInfoPercentage} %',
+        you_have_not_given_a_new_value = 'Nedali jste novou hodnotu... Aktuální hodnoty: %{crypto}',
+        this_crypto_does_not_exist = 'Tato kryptoměna neexistuje :(, dostupná: Qbit',
+        you_have_not_provided_crypto_available_qbit = 'Neposkytli jste kryptoměnu, dostupná: Qbit',
+        the_qbit_has_a_value_of = 'Qbit má hodnotu: %{crypto}',
+        you_have_with_a_value_of = 'Máte: %{playerPlayerDataMoneyCrypto} QBit, s hodnotou: %{mypocket},-'
     }
 }
 
