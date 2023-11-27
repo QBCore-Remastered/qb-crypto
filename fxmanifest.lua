@@ -10,8 +10,7 @@ shared_scripts {
     '@qbx_core/modules/utils.lua',
     '@qbx_core/shared/locale.lua',
     'locales/en.lua',
-    'locales/*.lua',
-    'config.lua'
+    'locales/*.lua'
 }
 
 server_scripts {
@@ -20,6 +19,10 @@ server_scripts {
 }
 
 client_script 'client/main.lua'
+
+files {
+    'config/shared.lua'
+}
 
 dependency 'mhacking'
 
