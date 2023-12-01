@@ -1,3 +1,5 @@
+local sharedConfig = require 'config.shared'
+
 -- Functions
 local function ExchangeSuccess()
 	TriggerServerEvent('qb-crypto:server:ExchangeSuccess', math.random(1, 10))
@@ -15,13 +17,13 @@ end
 
 local function SystemCrashCooldown()
 	CreateThread(function()
-		while Crypto.Exchange.RebootInfo.state do
-			if (Crypto.Exchange.RebootInfo.percentage + 1) <= 100 then
-				Crypto.Exchange.RebootInfo.percentage = Crypto.Exchange.RebootInfo.percentage + 1
-				TriggerServerEvent('qb-crypto:server:Rebooting', true, Crypto.Exchange.RebootInfo.percentage)
+		while sharedConfig.crypto.exchange.rebootInfo.state do
+			if (sharedConfig.crypto.exchange.rebootInfo.percentage + 1) <= 100 then
+				sharedConfig.crypto.exchange.rebootInfo.percentage = sharedConfig.crypto.exchange.rebootInfo.percentage + 1
+				TriggerServerEvent('qb-crypto:server:Rebooting', true, sharedConfig.crypto.exchange.rebootInfo.percentage)
 			else
-				Crypto.Exchange.RebootInfo.percentage = 0
-				Crypto.Exchange.RebootInfo.state = false
+				sharedConfig.crypto.exchange.rebootInfo.percentage = 0
+				sharedConfig.crypto.exchange.rebootInfo.state = false
 				TriggerServerEvent('qb-crypto:server:Rebooting', false, 0)
 			end
 			Wait(1200)
@@ -40,13 +42,13 @@ local function HackingSuccess(success)
 end
 
 local point = lib.points.new({
-	coords = Crypto.Exchange.coords,
+	coords = sharedConfig.crypto.exchange.coords,
 	distance = 1.5
 })
 
 function point:nearby()
-	if not Crypto.Exchange.RebootInfo.state then
-		DrawText3D(Lang:t('text.enter_usb'), Crypto.Exchange.coords)
+	if not sharedConfig.crypto.exchange.rebootInfo.state then
+		DrawText3D(Lang:t('text.enter_usb'), sharedConfig.crypto.exchange.coords)
 
 		if IsControlJustPressed(0, 38) then
 			local HasItem = exports.ox_inventory:Search('count', 'cryptostick') >= 1
@@ -58,14 +60,14 @@ function point:nearby()
 			end
 		end
 	else
-		DrawText3D(Lang:t('text.system_is_rebooting', {rebootInfoPercentage = Crypto.Exchange.RebootInfo.percentage}), Crypto.Exchange.coords)
+		DrawText3D(Lang:t('text.system_is_rebooting', {rebootInfoPercentage = sharedConfig.crypto.exchange.rebootInfo.percentage}), sharedConfig.crypto.exchange.coords)
 	end
 end
 
 -- Events
 
 RegisterNetEvent('qb-crypto:client:SyncReboot', function()
-	Crypto.Exchange.RebootInfo.state = true
+	sharedConfig.crypto.exchange.rebootInfo.state = true
 	SystemCrashCooldown()
 end)
 
@@ -75,16 +77,16 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
 end)
 
 RegisterNetEvent('qb-crypto:client:UpdateCryptoWorth', function(crypto, amount, history)
-	Crypto.Worth[crypto] = amount
+	sharedConfig.crypto.worth[crypto] = amount
 	if history then
-		Crypto.History[crypto] = history
+		sharedConfig.crypto.history[crypto] = history
 	end
 end)
 
 RegisterNetEvent('qb-crypto:client:GetRebootState', function(RebootInfo)
 	if RebootInfo.state then
-		Crypto.Exchange.RebootInfo.state = RebootInfo.state
-		Crypto.Exchange.RebootInfo.percentage = RebootInfo.percentage
+		sharedConfig.crypto.exchange.rebootInfo.state = RebootInfo.state
+		sharedConfig.crypto.exchange.rebootInfo.percentage = RebootInfo.percentage
 		SystemCrashCooldown()
 	end
 end)
